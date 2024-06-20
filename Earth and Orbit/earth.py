@@ -24,6 +24,38 @@ v=np.empty(shape=(len(t),2))
 r[0]=r_0
 v[0]=v_0
 
+# Defining the acceleration function
+def accn(r):
+    return (-G*M_sun/np.linalg.norm(r)**3 * r)
+
+# Numerical integration using Euler method
+def euler_method(r,v,accn,dt):
+
+    """ 
+    Equations for Euler method
+    --------------------------
+
+    ODE for position: dr/dt = v
+    r_new = r_old + dt * v
+
+    ODE for velocity: dv/dt = a(r)
+    v_new = v_old + dt * a(r)
+
+    Parameters:
+    -----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    a: function to calculate acceleration at a given position
+    dt: time step for the simulation
+
+    """
+    for i in range(1, len(t)):
+     r[i] = r[i-1] + dt * v[i-1]
+     v[i] = v[i-1] + accn(r[i-1]) * dt
+    
+euler_method(r,v,accn,dt)
+print(r)
+
 
 
 
