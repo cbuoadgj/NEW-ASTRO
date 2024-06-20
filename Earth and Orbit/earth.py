@@ -52,9 +52,22 @@ def euler_method(r,v,accn,dt):
     for i in range(1, len(t)):
      r[i] = r[i-1] + dt * v[i-1]
      v[i] = v[i-1] + accn(r[i-1]) * dt
-    
+
+# Apply Euler method on given initial conditions
 euler_method(r,v,accn,dt)
-print(r)
+
+# Find the point at which earth is at its aphelion(furthest from the sun)
+sizes = np.array(np.linalg.norm(r, axis=1))
+pos_aphelion=np.max(sizes)
+arg_aphelion = np.argmax(sizes)
+vel_aphelion = np.linalg.norm(v[arg_aphelion])
+
+# Print the results
+
+print("Earth is at its aphelion at a distance of", pos_aphelion/1e9, "billion kilometers")
+print("Earth's velocity at its aphelion is", vel_aphelion/1e3, "km/s")
+
+
 
 
 
