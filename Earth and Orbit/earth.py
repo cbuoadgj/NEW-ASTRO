@@ -56,6 +56,7 @@ def euler_method(r,v,accn,dt):
 # Apply Euler method on given initial conditions
 euler_method(r,v,accn,dt)
 
+
 # Find the point at which earth is at its aphelion(furthest from the sun)
 sizes = np.array(np.linalg.norm(r, axis=1))
 pos_aphelion=np.max(sizes)
@@ -64,9 +65,80 @@ vel_aphelion = np.linalg.norm(v[arg_aphelion])
 
 # Print the results
 
-print("Earth is at its aphelion at a distance of", pos_aphelion/1e9, "billion kilometers")
-print("Earth's velocity at its aphelion is", vel_aphelion/1e3, "km/s")
+print(f"Earth is at its aphelion at t={t[arg_aphelion]/3600} years")
+print(f"Speed at aphelion: {vel_aphelion/1000} km/s")
 
+# RK4 integration      
+def rk4_method(r, v, accn, dt):
+    """
+    Equations for RK4 method
+    --------------------------
+
+    ODE for position: dr/dt = v
+    r_new = r_old + dt * (1/6) * (k1r + 2k2r + 2k3r + k4r)
+
+    ODE for velocity: dv/dt = a(r)
+    v_new = v_old + dt/6 * (k1v + 2k2v + 2k3v + k4v)
+
+    Parameters:
+    -----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    a: function to calculate acceleration at a given position
+    dt: time step for the simulation
+
+    Method to calculate steps
+    -------------------------
+    step1 = 0
+    k1v = dt * a(r[i-1])
+    k1r = v[i-1]
+     
+    step2 = dt/2 using k1
+    k2v = dt * a(r[i-1] +k1r*dt/2)
+    k2r = v[i-1] + k1v*dt/2
+
+    step3 = dt/2 using k2
+    k3v = dt * a(r[i-1] + k2r*dt/2)
+    k3r = v[i-1] + k2v*dt/2
+    
+    step4 = dt using k3
+    k4v = dt * a(r[i-1] + k3r*dt/1)
+    k4r = v[i-1] + k3v*dt
+    """
+    for i in range(1, len(r)):
+        k1v = dt * accn(r[i-1])
+        k1r = v[i-1]
+     
+        k2v = dt * accn(r[i-1] +k1r*dt/2)
+        k2r = v[i-1] + k1v*dt/2
+
+        k3v = dt * accn(r[i-1] + k2r*dt/2)
+        k3r = v[i-1] + k2v*dt/2
+    
+        k4v = dt * accn(r[i-1] + k3r*dt/1)
+        k4r = v[i-1] + k3v*dt
+
+        r[i] = r[i-1] + dt * (1/6) * (k1r + 2*k2r + 2*k3r + k4r)
+        v[i] = v[i-1] + dt/6 * (k1v + 2*k2v + 2*k3v + k4v)
+
+rk4_method(r,v,accn,dt)
+def numerical_intergration(r,v,accn,dt,method='euler'):
+    """
+    this function performs numerical integration using either Euler or RK4 method
+    """
+    if method=='euler':
+      euler_method(r,v,accn,dt)
+    elif method=='rk4':
+      rk4_method(r,v,accn,dt)
+    else:
+      raise ValueError("Invalid method. Choose either 'euler' or 'rk4':")      
+# Call the numerical integration function
+numerical_intergration(r,v,accn,dt,method='rk4cls')
+# Print the results
+print(f"Speed at aphelion: {vel_aphelion/1000} km/s")
+print(f"aphelion distance: {pos_aphelion/1e9} billion km") 
+print(f"perihelion distance: {sizes[0]/1e9} billion km")        
+   
 
 
 
