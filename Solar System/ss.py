@@ -102,6 +102,9 @@ def draw_stars(stars_list):
 #Create simulation
 
 run=True
+pause=False
+
+# Create planets
 sun=solarsystembodies("sun",yellow,0,0,1.989e30,30)
 mercury=solarsystembodies("mercury",gray,0.39*solarsystembodies.AU,0,0.33e24,6) 
 mercury.vel_y= -47.4e3
@@ -122,13 +125,17 @@ while True:
     window.fill(black)
     draw_stars(stars_list)
     for event in pg.event.get():
-        if event.type == pg.KEYDOWN and event.key==pg.K_ESCAPE:
-            pg.quit()
-            quit()
-    ss_bodies= [sun,mercury,venus,earth,mars]
-    for body in ss_bodies:
-        body.update_position(ss_bodies)
-        body.draw_body(window)       
-    pg.display.update()
+        if event.type == pg.KEYDOWN:
+            if event.key==pg.K_ESCAPE:
+                pg.quit()
+                quit()
+            elif event.key == pg.K_SPACE:
+                pause=not pause
+    if not pause: 
+        ss_bodies= [sun,mercury,venus,earth,mars]
+        for body in ss_bodies:
+            body.update_position(ss_bodies)
+            body.draw_body(window)       
+        pg.display.update()
 # Quit simulation
 pg.quit()
