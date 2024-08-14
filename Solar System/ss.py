@@ -36,11 +36,24 @@ class solarsystembodies :
         self.y=y
         self.mass=mass
         self.radius=radius
-    # Method to create bodies 
-    def draw_body(self,arg):
+    # Method 1 to create bodies 
+    def draw_body(self,window):
         x=self.x*solarsystembodies.scale + width//2
         y=self.y*solarsystembodies.scale + height//2
         pg.draw.circle(surface=window,color=self.color,center=(x,y),radius=self.radius)
+
+    # Method 2 to calculate the gravitational force
+    def calculate_gravitational_force(self, ss_body):
+        G=6.67430e-11
+        x_diff=ss_body.x-self.x
+        y_diff=ss_body.y-self.y
+        distance=math.sqrt(x_diff**2 + y_diff**2)
+        g_force=(G*self.mass*ss_body.mass/distance**2)
+        theta=math.atan2(y_diff/x_diff)
+        f_x=g_force*math.cos(theta)
+        f_y=g_force*math.sin(theta)
+        return f_x,f_y
+
 
 
 # Stars List with colors, center and radius information
