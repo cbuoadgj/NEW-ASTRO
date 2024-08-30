@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+from star_data import starproperties
+import warnings 
+warnings.filterwarnings("ignore")
+
+# Import necessary libraries for model loading and prediction
 import numpy as np
 import uvicorn
 from predictor import load_model, make_predictions
@@ -13,8 +18,8 @@ def index_root():
 
 @app.post('/predict')
 
-def predict_star_type(temperature: float, luminosity: float, radius: float, abs_mag: float):
-    input_features =[[temperature, luminosity, radius, abs_mag]]
+def predict_star_type(sp: starproperties):
+    input_features =[[sp.temperature, sp.luminosity, sp.radius, sp.abs_mag]]
     make_predictions(model,input_features)
     predicted_class,probs,classes=make_predictions(model,input_features)
     return {
@@ -23,5 +28,6 @@ def predict_star_type(temperature: float, luminosity: float, radius: float, abs_
          'Confidence_score':str(round(np.max(probs),3)*100)+'%'
     }
 
+# Run the FastAPI app on a local server
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
