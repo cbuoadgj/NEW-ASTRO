@@ -11,7 +11,7 @@ decorator==5.1.1
 executing==2.0.1
 fastapi==0.112.2
 fonttools==4.53.1
-h11==0.14.0
+h11==0.16.0
 idna==3.8
 ipykernel==6.29.5
 ipython==8.26.0
