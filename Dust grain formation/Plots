@@ -1,0 +1,54 @@
+# Plot only dust fraction versus time for 100 years
+
+colours = {
+    1.0e4: "tab:blue",
+    1.0e5: "tab:orange",
+    1.0e6: "tab:green"
+}
+
+fig, axes = plt.subplots(
+    1,
+    3,
+    figsize=(15, 4.5),
+    sharey=True
+)
+
+for ax, f_dust0 in zip(axes, f_dust0_values):
+
+    for n_total in n_total_values:
+
+        data = results[f_dust0][n_total]
+
+        ax.plot(
+            data["time_years"],
+            data["f_dust"],
+            color=colours[n_total],
+            linewidth=2,
+            label=(
+                f"$n_{{total}} = 10^{{{int(np.log10(n_total))}}}$ "
+                "cm$^{-3}$"
+            )
+        )
+
+    ax.set_title(f"Initial dust fraction: $f_{{dust,0}} = {f_dust0}$")
+    ax.set_xlabel("Time (years)")
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 1.05)
+    ax.grid(alpha=0.3)
+
+axes[0].set_ylabel("Dust-phase silicon fraction, $f_{dust}$")
+axes[0].legend(fontsize=9)
+
+fig.suptitle(
+    "Evolution of Dust-Phase Silicon Fraction Over 100 Years",
+    fontsize=14,
+    y=1.02
+)
+
+plt.tight_layout()
+plt.savefig(
+    "dust_fraction_vs_time.png",
+    dpi=300,
+    bbox_inches="tight"
+)
+plt.show()
