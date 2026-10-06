@@ -1,1 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Constants
+k_B= 1.38e-16 # erg K^-1
+m_p= 1.67e-24 # g
+
+A_Si= 28.0
+m_Si= A_Si* m_p  # mass of one Si atom (g)
+
+rho_dust= 3.0  # grain material density (g/cm^3)
+T= 100.0       # gas temperature (K)
+
+# Initial conditions
+n_total= 1.0e4 # total Si atoms in gas and dust (cm^-3)
+f_dust0= 0.01 # initially condensed fraction
+a0= 0.1e-4     # initial grain radius (cm = 0.1 micron)
+
+# Initial grain mass
+m0= (4.0/3.0)* np.pi* a0**3 *rho_dust
+
+# Initial Si atoms in dust and gas
+n_dust0= f_dust0* n_total
+n_gas0= (1.0-f_dust0)* n_total
+
+# Fixed number of grains per unit volume
+n_grains= n_dust0* m_Si / m0
+
+# Mean thermal speed of Si atoms
+v_th= np.sqrt(8.0*k_B*T / (np.pi*m_Si))
+
+print("Initial gas phase Si density:", n_gas0, "cm^-3")
+print("Fixed grain number density:", n_grains, "cm^-3")
+print("Initial grain radius:", a0 / 1e-4, "micron")
 
