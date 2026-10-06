@@ -1,0 +1,25 @@
+def grain_properties(n_gas):
+    # Number of Si atoms transferred from gas to dust
+    n_accreted= n_gas0- n_gas
+
+    # Mass gained by one grain
+    m_grain= m0 + n_accreted * m_Si / n_grains
+
+    # Radius corresponding to this grain mass
+    a= (3.0* m_grain / (4.0*np.pi*rho_dust))**(1.0 / 3.0)
+
+    return m_grain, a
+
+def dn_gas_dt(t, y):
+    n_gas = max(y[0], 0.0)
+
+    m_grain, a= grain_properties(n_gas)
+
+    # Collision cross-section of one grain.
+    # This is pi a^2, not 4 pi a^2.
+    cross_section = np.pi * a**2
+
+    # Si atoms removed from the gas
+    dn_dt= -n_grains* cross_section* n_gas* v_th
+
+    return [dn_dt]
