@@ -1,0 +1,43 @@
+year = 365.25 * 24.0 * 3600.0
+Myr = 1.0e6 * year
+
+t_max = 100.0*year # (secs)
+
+def nearly_depleted(t, y):
+    return y[0] - 1.0e-8* n_total
+
+nearly_depleted.terminal = True
+nearly_depleted.direction = -1
+
+solution= solve_ivp(
+    dn_gas_dt,
+    t_span=(0.0, t_max),
+    y0=[n_gas0],
+    events=nearly_depleted,
+    rtol=1e-8,
+    atol=1e-12,
+    max_step=t_max / 10000
+)
+
+t = solution.t
+n_gas= solution.y[0]
+
+# Derived evolving quantities
+f_dust= (n_total- n_gas) / n_total
+
+a = np.array([
+    grain_properties(ng)[1]
+    for ng in n_gas
+])
+
+dn_dt = np.array([
+    dn_gas_dt(time, [ng])[0]
+    for time, ng in zip(t, n_gas)
+])
+
+# Instantaneous gas depletion timescale
+timescale = np.where(
+    np.abs(dn_dt) > 0,
+    n_gas / np.abs(dn_dt),
+    np.nan
+)
